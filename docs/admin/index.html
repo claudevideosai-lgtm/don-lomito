@@ -230,24 +230,14 @@
     <form class="login-box" id="loginForm" novalidate>
       <div class="mark" id="loginMark">A</div>
       <h1>Panel de administración</h1>
-      <p class="sub">Entrá con tu llave de acceso de GitHub.</p>
+      <p class="sub">Ingresá tu llave de acceso.</p>
       <div class="alert err" id="loginErr" hidden></div>
       <div class="field">
         <label for="lToken">Llave de acceso</label>
-        <input class="input" id="lToken" type="password" autocomplete="current-password" placeholder="github_pat_..." spellcheck="false" required>
+        <input class="input" id="lToken" type="password" autocomplete="current-password" spellcheck="false" required>
         <span class="hint">Queda guardada solo en este dispositivo. Para salir, tocá "Salir".</span>
       </div>
       <button class="btn pri" id="loginBtn" type="submit">Ingresar</button>
-      <details class="help">
-        <summary>¿Cómo creo mi llave? (una sola vez)</summary>
-        <ol>
-          <li>Abrí <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">esta página de GitHub</a> con tu cuenta.</li>
-          <li>En <b>Token name</b> poné "Panel carta" y en <b>Expiration</b> elegí cuánto dura.</li>
-          <li>En <b>Repository access</b> elegí <b>Only select repositories</b> y marcá <b data-repo></b>.</li>
-          <li>En <b>Permissions</b>, agregá <b>Contents</b> y elegí <b>Read and write</b>.</li>
-          <li>Tocá <b>Generate token</b>, copiá la llave y pegala acá arriba.</li>
-        </ol>
-      </details>
       <a class="back-link" href="../">← Volver a la carta</a>
     </form>
   </div>
