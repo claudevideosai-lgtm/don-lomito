@@ -1,0 +1,65 @@
+{
+  "config": {
+    "nombre": "Don Lomito",
+    "rubro": "Lomos y Pizzas",
+    "logo": "",
+    "whatsapp": "5493510000000",
+    "costoEnvio": null,
+    "horario": "Martes a domingo · 20 a 00:30 hs",
+    "direccion": "Tu dirección, Ciudad, Provincia",
+    "envioTexto": "Delivery en la zona. El costo del envío se confirma por WhatsApp.",
+    "heroTitulo": "Lomitos y pizzas hechos al momento",
+    "heroTexto": "Elegí de la carta, armá tu pedido y mandalo por WhatsApp con el total ya calculado.",
+    "heroFoto": "fotos/pz-8.jpg"
+  },
+  "cats": [
+    { "id": "promos", "nombre": "Promos", "color": "#e11d48", "foto": "fotos/brindis.jpg", "sub": "Combos armados para ahorrar. Todos los días.", "items": [
+      { "id": "promo-lomo-duo", "nombre": "Promo 2 Lomitos", "desc": "2 Lomitos Completos con papas + gaseosa 1,5 L.", "precio": 34000, "antes": 37500, "foto": "fotos/lomo-2.jpg", "tag": "Para 2", "top": false, "disponible": true, "opcion": { "titulo": "Gaseosa", "valores": ["Coca-Cola", "Coca-Cola Zero", "Sprite", "Fanta"] } },
+      { "id": "promo-pizza-duo", "nombre": "Promo 2 Pizzas", "desc": "2 Muzzarellas grandes + gaseosa 1,5 L.", "precio": 24000, "antes": 26500, "foto": "fotos/pz-11.jpg", "tag": "Para compartir", "top": false, "disponible": true, "opcion": { "titulo": "Gaseosa", "valores": ["Coca-Cola", "Coca-Cola Zero", "Sprite", "Fanta"] } },
+      { "id": "promo-pizza-birra", "nombre": "Pizza + Birra", "desc": "1 Pizza Calabresa + cerveza de 1 L bien fría.", "precio": 17000, "antes": 19000, "foto": "fotos/pz-10.jpg", "tag": "Promo", "top": false, "disponible": true },
+      { "id": "promo-familiar", "nombre": "Promo Familiar", "desc": "1 Pizza Especial + 2 Lomitos Clásicos + Papas Grandes + gaseosa 1,5 L.", "precio": 48000, "antes": 53500, "foto": "fotos/brindis.jpg", "tag": "Para 4", "top": false, "disponible": true, "opcion": { "titulo": "Gaseosa", "valores": ["Coca-Cola", "Coca-Cola Zero", "Sprite", "Fanta"] } },
+      { "id": "promo-solo", "nombre": "Promo Individual", "desc": "1 Lomito Clásico con papas + gaseosa en lata.", "precio": 16000, "antes": 16700, "foto": "fotos/lomo-3.jpg", "tag": "Para 1", "top": false, "disponible": true, "opcion": { "titulo": "Lata", "valores": ["Coca-Cola", "Coca-Cola Zero", "Sprite", "Fanta"] } }
+    ]},
+    { "id": "lomitos", "nombre": "Lomitos", "color": "#16a34a", "foto": "fotos/lomo-1.jpg", "sub": "En pan casero. Todos vienen con papas fritas.", "items": [
+      { "id": "lomo-clasico", "nombre": "Lomito Clásico", "desc": "Lomo tierno a la plancha, lechuga, tomate y mayonesa casera.", "precio": 14500, "foto": "fotos/lomo-3.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "lomo-completo", "nombre": "Lomito Completo", "desc": "Lomo, jamón, queso, huevo a la plancha, lechuga, tomate y mayonesa.", "precio": 16500, "foto": "fotos/lomo-6.jpg", "tag": "Más pedido", "top": true, "disponible": true },
+      { "id": "lomo-casa", "nombre": "Lomito de la Casa", "desc": "Lomo, doble cheddar, panceta crocante, cebolla caramelizada y huevo.", "precio": 18500, "foto": "fotos/lomo-1.jpg", "tag": "De la casa", "top": true, "disponible": true },
+      { "id": "lomo-napolitano", "nombre": "Lomito Napolitano", "desc": "Lomo, salsa de tomate, muzzarella gratinada, jamón y orégano.", "precio": 17500, "foto": "fotos/lomo-5.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "lomo-pizza", "nombre": "Lomito Pizza", "desc": "Lomo, salsa, muzzarella, morrón asado y aceitunas.", "precio": 17500, "foto": "fotos/lomo-4.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "lomo-plato", "nombre": "Lomito al Plato", "desc": "Lomo con jamón, queso y huevo, servido al plato con doble porción de papas.", "precio": 19500, "foto": "fotos/lomo-2.jpg", "tag": "", "top": false, "disponible": true }
+    ]},
+    { "id": "pizzas", "nombre": "Pizzas", "color": "#f97316", "foto": "fotos/pz-8.jpg", "sub": "Grandes de 8 porciones. Masa casera y muzzarella de verdad.", "items": [
+      { "id": "pz-muzza", "nombre": "Muzzarella", "desc": "Salsa de tomate, abundante muzzarella, orégano y aceitunas.", "precio": 11000, "foto": "fotos/pz-9.jpg", "tag": "", "top": true, "disponible": true },
+      { "id": "pz-especial", "nombre": "Especial", "desc": "Muzzarella, jamón, morrón, champiñones y aceitunas.", "precio": 13500, "foto": "fotos/pz-2.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "pz-napo", "nombre": "Napolitana", "desc": "Muzzarella, rodajas de tomate, ajo, albahaca y perejil.", "precio": 12500, "foto": "fotos/pz-6.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "pz-fugazzeta", "nombre": "Fugazzeta", "desc": "Muzzarella bien fundida con cebolla y orégano.", "precio": 12500, "foto": "fotos/pz-1.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "pz-calabresa", "nombre": "Calabresa", "desc": "Muzzarella y rodajas de longaniza calabresa.", "precio": 13500, "foto": "fotos/pz-3.jpg", "tag": "", "top": true, "disponible": true },
+      { "id": "pz-rucula", "nombre": "Rúcula y Crudo", "desc": "Muzzarella, rúcula fresca, jamón crudo y parmesano.", "precio": 16000, "foto": "fotos/pz-5.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "pz-casa", "nombre": "Pizza de la Casa", "desc": "Muzzarella, cheddar, panceta, cebolla caramelizada, longaniza y huevo.", "precio": 17000, "foto": "fotos/pz-4.jpg", "tag": "De la casa", "top": false, "disponible": true }
+    ]},
+    { "id": "papitas", "nombre": "Papitas", "color": "#ca8a04", "foto": "fotos/papas-3.jpg", "sub": "Cortadas y fritas en el momento.", "items": [
+      { "id": "papas-chicas", "nombre": "Papas Chicas", "desc": "Porción individual de papas fritas.", "precio": 4000, "foto": "fotos/papas-1.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "papas-grandes", "nombre": "Papas Grandes", "desc": "Porción grande para compartir.", "precio": 6500, "foto": "fotos/papas-3.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "papas-cheddar", "nombre": "Papas Cheddar", "desc": "Papas con cheddar fundido, panceta crocante y verdeo.", "precio": 9000, "foto": "fotos/papas-5.jpg", "tag": "Recomendado", "top": true, "disponible": true },
+      { "id": "papas-provenzal", "nombre": "Papas Provenzal", "desc": "Papas fritas con ajo y perejil.", "precio": 7500, "foto": "fotos/papas-6.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "papas-casa", "nombre": "Papas de la Casa", "desc": "Papas con cheddar, panceta, huevo revuelto y verdeo.", "precio": 10500, "foto": "fotos/papas-4.jpg", "tag": "De la casa", "top": false, "disponible": true }
+    ]},
+    { "id": "acomp", "nombre": "Acompañamientos", "color": "#8b5cf6", "foto": "fotos/aros.jpg", "sub": "Para sumar al pedido o compartir.", "items": [
+      { "id": "aros", "nombre": "Aros de Cebolla", "desc": "10 aros rebozados y crocantes con dip.", "precio": 7000, "foto": "fotos/aros.jpg", "tag": "", "top": false, "disponible": true, "opcion": { "titulo": "Dip", "valores": ["Cheddar", "Barbacoa", "Alioli"] } },
+      { "id": "bastones", "nombre": "Bastones de Muzza", "desc": "6 bastones de muzzarella con salsa de tomate.", "precio": 8000, "foto": "fotos/bastones.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "nuggets", "nombre": "Tiras de Pollo", "desc": "Tiras de pollo crocantes con papas y salsa.", "precio": 9500, "foto": "fotos/nuggets.jpg", "tag": "", "top": false, "disponible": true, "opcion": { "titulo": "Salsa", "valores": ["Cheddar", "Barbacoa", "Alioli", "Ketchup"] } },
+      { "id": "ensalada", "nombre": "Ensalada Fresca", "desc": "Hojas verdes, tomate cherry, palta, garbanzos y vegetales de estación.", "precio": 7500, "foto": "fotos/ensalada.jpg", "tag": "", "top": false, "disponible": true },
+      { "id": "dip", "nombre": "Dip Extra", "desc": "Porción extra de salsa para acompañar.", "precio": 1200, "foto": "fotos/papas-2.jpg", "tag": "", "top": false, "disponible": true, "opcion": { "titulo": "Sabor", "valores": ["Cheddar", "Barbacoa", "Alioli", "Ketchup"] } }
+    ]},
+    { "id": "bebidas", "nombre": "Bebidas", "color": "#2563eb", "foto": "fotos/coca-1.jpg", "sub": "Bien frías.", "items": [
+      { "id": "gaseosa15", "nombre": "Gaseosa 1,5 L", "desc": "Botella de 1,5 litros.", "precio": 4500, "foto": "fotos/coca-2.jpg", "tag": "", "top": false, "disponible": true, "opcion": { "titulo": "Sabor", "valores": ["Coca-Cola", "Coca-Cola Zero", "Sprite", "Fanta"] } },
+      { "id": "lata", "nombre": "Gaseosa en lata", "desc": "Lata de 354 ml.", "precio": 2200, "foto": "fotos/lata.jpg", "tag": "", "top": false, "disponible": true, "opcion": { "titulo": "Sabor", "valores": ["Coca-Cola", "Coca-Cola Zero", "Sprite", "Fanta"] } },
+      { "id": "agua", "nombre": "Agua mineral 500 ml", "desc": "Botella individual.", "precio": 2000, "foto": "fotos/agua.jpg", "tag": "", "top": false, "disponible": true, "opcion": { "titulo": "Tipo", "valores": ["Sin gas", "Con gas"] } },
+      { "id": "cerveza", "nombre": "Cerveza 1 L", "desc": "Botella de litro bien fría.", "precio": 5500, "foto": "fotos/cerveza.jpg", "tag": "", "top": false, "disponible": true, "opcion": { "titulo": "Tipo", "valores": ["Rubia", "Negra", "Roja"] } }
+    ]},
+    { "id": "postres", "nombre": "Postres", "color": "#db2777", "foto": "fotos/helado.jpg", "sub": "Para cerrar bien.", "items": [
+      { "id": "flan", "nombre": "Flan Casero", "desc": "Flan casero con caramelo.", "precio": 4500, "foto": "fotos/flan.jpg", "tag": "", "top": false, "disponible": true, "opcion": { "titulo": "Con", "valores": ["Dulce de leche", "Crema", "Mixto", "Solo"] } },
+      { "id": "helado", "nombre": "Helado 1/4 kg", "desc": "Hasta 3 gustos (anotalos en aclaraciones).", "precio": 6000, "foto": "fotos/helado.jpg", "tag": "", "top": false, "disponible": true }
+    ]}
+  ]
+}
