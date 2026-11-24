@@ -63,6 +63,10 @@
   .alert{padding:11px 13px;border-radius:10px;font-size:13.5px;font-weight:500}
   .alert.err{background:var(--red-soft);color:#991b1b}
   .alert.warn{background:var(--amber-soft);color:#92400e}
+  .help{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:13.5px}
+  .help summary{cursor:pointer;font-weight:600;color:var(--green-2)}
+  .help ol{margin:10px 0 2px 18px;display:flex;flex-direction:column;gap:6px;color:var(--muted)}
+  .help a{color:var(--green-2);font-weight:600}
   .back-link{font-size:13px;color:var(--muted);text-decoration:none}
   .back-link:hover{color:var(--text)}
 
@@ -218,7 +222,7 @@
 
 <!-- ===== LOGIN ===== -->
 <section class="login" id="loginView" hidden>
-  <div class="login-side" style="background-image:url('/fotos/lomo-1.jpg')">
+  <div class="login-side" style="background-image:url('../fotos/lomo-1.jpg')">
     <h2>Tu carta,<br>siempre al día</h2>
     <p>Cambiá precios, sumá productos y subí fotos. Los cambios se ven en la carta al instante.</p>
   </div>
@@ -226,18 +230,25 @@
     <form class="login-box" id="loginForm" novalidate>
       <div class="mark" id="loginMark">A</div>
       <h1>Panel de administración</h1>
-      <p class="sub">Ingresá con tu usuario y contraseña.</p>
+      <p class="sub">Entrá con tu llave de acceso de GitHub.</p>
       <div class="alert err" id="loginErr" hidden></div>
       <div class="field">
-        <label for="lUser">Usuario</label>
-        <input class="input" id="lUser" autocomplete="username" required>
-      </div>
-      <div class="field">
-        <label for="lPass">Contraseña</label>
-        <input class="input" id="lPass" type="password" autocomplete="current-password" required>
+        <label for="lToken">Llave de acceso</label>
+        <input class="input" id="lToken" type="password" autocomplete="current-password" placeholder="github_pat_..." spellcheck="false" required>
+        <span class="hint">Queda guardada solo en este dispositivo. Para salir, tocá "Salir".</span>
       </div>
       <button class="btn pri" id="loginBtn" type="submit">Ingresar</button>
-      <a class="back-link" href="/">← Volver a la carta</a>
+      <details class="help">
+        <summary>¿Cómo creo mi llave? (una sola vez)</summary>
+        <ol>
+          <li>Abrí <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">esta página de GitHub</a> con tu cuenta.</li>
+          <li>En <b>Token name</b> poné "Panel carta" y en <b>Expiration</b> elegí cuánto dura.</li>
+          <li>En <b>Repository access</b> elegí <b>Only select repositories</b> y marcá <b data-repo></b>.</li>
+          <li>En <b>Permissions</b>, agregá <b>Contents</b> y elegí <b>Read and write</b>.</li>
+          <li>Tocá <b>Generate token</b>, copiá la llave y pegala acá arriba.</li>
+        </ol>
+      </details>
+      <a class="back-link" href="../">← Volver a la carta</a>
     </form>
   </div>
 </section>
@@ -252,7 +263,7 @@
       <button type="button" data-view="local"><svg class="i"><use href="#i-store"/></svg>Datos del local</button>
     </nav>
     <div class="side-foot">
-      <a href="/" target="_blank" rel="noopener"><svg class="i"><use href="#i-eye"/></svg><span>Ver la carta</span></a>
+      <a href="../" target="_blank" rel="noopener"><svg class="i"><use href="#i-eye"/></svg><span>Ver la carta</span></a>
       <button type="button" id="logout"><svg class="i"><use href="#i-out"/></svg><span>Salir</span></button>
     </div>
   </aside>
@@ -390,7 +401,15 @@ const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 const fmt = n => "$" + Math.round(Number(n) || 0).toLocaleString("es-AR");
-const src = s => !s ? "data:image/gif;base64,R0lGODlhAQABAAAAACw=" : s.startsWith("fotos/") ? "/" + s : s;
+/* Repositorio donde vive la página. En GitHub Pages se deduce de la dirección (usuario.github.io/repo). */
+const REPO = (() => {
+  if (location.hostname.endsWith(".github.io")) return { owner: location.hostname.split(".")[0], name: location.pathname.split("/").filter(Boolean)[0] };
+  return { owner: "claudevideosai-lgtm", name: "don-lomito" };
+})();
+const BRANCH = "main", MENU_PATH = "docs/menu.json";
+const PREVIEW = {};   // fotos recién subidas: se muestran desde el navegador hasta que GitHub Pages las publique
+const BLANK = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+const src = s => !s ? BLANK : PREVIEW[s] || (s.startsWith("fotos/") ? "../" + s : s);
 const icon = id => `<svg class="i"><use href="#${id}"/></svg>`;
 const PALETTE = ["#e11d48","#16a34a","#f97316","#ca8a04","#8b5cf6","#2563eb","#db2777","#0891b2","#0f110d"];
 const TOKEN_KEY = "carta_admin_token";
@@ -403,23 +422,46 @@ try { token = localStorage.getItem(TOKEN_KEY) || ""; } catch(e) {}
 let M = null;          // carta completa (config + cats)
 let view = "productos";
 
-/* ---------- API ---------- */
-async function api(path, opts = {}) {
-  const headers = { ...(opts.headers || {}) };
-  if (token) headers.authorization = "Bearer " + token;
-  const r = await fetch(path, { ...opts, headers });
+/* ---------- GitHub ---------- */
+function b64FromBytes(bytes) {
+  let s = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+const b64FromText = t => b64FromBytes(new TextEncoder().encode(t));
+const textFromB64 = b => new TextDecoder().decode(Uint8Array.from(atob(String(b).replace(/\s/g, "")), c => c.charCodeAt(0)));
+function ghError(status, data) {
+  if (status === 403 && /rate limit/i.test(data.message || "")) return "GitHub está limitando los pedidos. Esperá unos minutos y probá de nuevo.";
+  if (status === 403) return "La llave no tiene permiso para modificar la página (tiene que tener Contents: Read and write).";
+  if (status === 404) return `No se encontró el repositorio "${REPO.name}". Revisá que la llave tenga acceso a ese repositorio.`;
+  if (status === 409 || status === 422) return "Hubo un conflicto al guardar. Probá de nuevo.";
+  return data.message || "No se pudo completar. Revisá tu conexión y probá de nuevo.";
+}
+async function gh(path, opts = {}) {
+  const headers = { accept: "application/vnd.github+json", "x-github-api-version": "2022-11-28", authorization: "Bearer " + token };
+  if (opts.body) headers["content-type"] = "application/json";
+  const r = await fetch("https://api.github.com/repos/" + REPO.owner + "/" + REPO.name + path, { method: opts.method || "GET", headers, body: opts.body, cache: "no-store" });
   let data = {};
   try { data = await r.json(); } catch(e) {}
-  if (r.status === 401 && !(path === "/api/login" && opts.method === "POST")) { logout("Tu sesión venció. Volvé a ingresar."); throw new Error("unauth"); }
-  if (!r.ok) throw new Error(data.error || "No se pudo completar. Probá de nuevo.");
+  if (r.status === 401) {
+    if (opts.login) throw new Error("Esa llave no es válida. Revisá que la copiaste completa.");
+    logout("La llave venció o fue borrada. Ingresá una nueva."); throw new Error("unauth");
+  }
+  if (!r.ok) { const e = new Error(ghError(r.status, data)); e.status = r.status; throw e; }
   return data;
 }
-async function loadMenu() {
-  const r = await api("/api/menu");
-  if (r.data) return r.data;
-  const d = await fetch("/menu-default.json", { cache:"no-store" });
-  return d.json();
+async function verifyToken(login) {
+  const r = await gh("", { login });
+  if (!r.permissions || !r.permissions.push) throw new Error("Esa llave puede ver la página pero no modificarla. Al crearla, elegí Contents: Read and write.");
 }
+let menuSha = null;
+async function loadMenu() {
+  const r = await gh(`/contents/${MENU_PATH}?ref=${BRANCH}`);
+  menuSha = r.sha;
+  return JSON.parse(textFromB64(r.content));
+}
+const putFile = (path, content, message, sha) =>
+  gh(`/contents/${path}`, { method: "PUT", body: JSON.stringify({ message, content, branch: BRANCH, ...(sha ? { sha } : {}) }) });
 function setStatus(kind, txt) {
   const s = $("#status");
   s.classList.toggle("busy", kind === "busy");
@@ -430,10 +472,20 @@ function setStatus(kind, txt) {
 async function persist(okMsg, rollback) {
   setStatus("busy", "Guardando…");
   try {
-    const r = await api("/api/menu", { method:"PUT", headers:{ "content-type":"application/json" }, body: JSON.stringify(M) });
-    const t = new Date(r.actualizado || Date.now());
-    setStatus("ok", "Guardado " + t.toLocaleTimeString("es-AR", { hour:"2-digit", minute:"2-digit" }));
-    toast(okMsg || "Guardado. Ya se ve en la carta.");
+    M.actualizado = new Date().toISOString();
+    const body = b64FromText(JSON.stringify(M, null, 2) + "\n");
+    const msg = "Panel: " + (okMsg || "cambios en la carta");
+    let r;
+    try { r = await putFile(MENU_PATH, body, msg, menuSha); }
+    catch(e) {
+      if (e.status !== 409 && e.status !== 422) throw e;
+      // la carta cambió desde otro dispositivo: tomamos la versión nueva y guardamos encima
+      menuSha = (await gh(`/contents/${MENU_PATH}?ref=${BRANCH}`)).sha;
+      r = await putFile(MENU_PATH, body, msg, menuSha);
+    }
+    menuSha = r.content.sha;
+    setStatus("ok", "Guardado " + new Date().toLocaleTimeString("es-AR", { hour:"2-digit", minute:"2-digit" }));
+    toast((okMsg || "Guardado") + ". Se ve en la carta en 1 minuto.");
     return true;
   } catch(e) {
     if (e.message === "unauth") return false;
@@ -458,8 +510,11 @@ async function uploadPhoto(file, max = 1400) {
   const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
   g.drawImage(bmp, 0, 0, c.width, c.height);
   const blob = await new Promise(res => c.toBlob(res, "image/jpeg", 0.82));
-  const r = await api("/api/upload", { method:"POST", headers:{ "content-type":"image/jpeg" }, body: blob });
-  return r.url;
+  const id = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+  const url = `fotos/u/${id}.jpg`;
+  await putFile("docs/" + url, b64FromBytes(new Uint8Array(await blob.arrayBuffer())), "Panel: foto nueva");
+  PREVIEW[url] = URL.createObjectURL(blob);
+  return url;
 }
 async function pickPhoto(input, prevEl, btnTxtEl, max) {
   const file = input.files && input.files[0];
@@ -481,7 +536,7 @@ async function pickPhoto(input, prevEl, btnTxtEl, max) {
 function showLogin(msg) {
   $("#appView").hidden = true; $("#loginView").hidden = false;
   $("#loginErr").hidden = !msg; $("#loginErr").textContent = msg || "";
-  setTimeout(() => $("#lUser").focus(), 50);
+  setTimeout(() => $("#lToken").focus(), 50);
 }
 function logout(msg) {
   token = ""; try { localStorage.removeItem(TOKEN_KEY); } catch(e) {}
@@ -493,16 +548,18 @@ $("#loginForm").addEventListener("submit", async e => {
   const b = $("#loginBtn"); b.disabled = true; b.innerHTML = `<span class="spin"></span> Ingresando…`;
   $("#loginErr").hidden = true;
   try {
-    const r = await api("/api/login", { method:"POST", headers:{ "content-type":"application/json" }, body: JSON.stringify({ usuario: $("#lUser").value, clave: $("#lPass").value }) });
-    token = r.token; try { localStorage.setItem(TOKEN_KEY, token); } catch(e) {}
-    $("#lPass").value = "";
+    token = $("#lToken").value.trim();
+    if (!token) throw new Error("Pegá tu llave de acceso.");
+    await verifyToken(true);
+    try { localStorage.setItem(TOKEN_KEY, token); } catch(e) {}
+    $("#lToken").value = "";
     await startApp();
   } catch(err) {
     $("#loginErr").hidden = false; $("#loginErr").textContent = err.message;
   } finally { b.disabled = false; b.textContent = "Ingresar"; }
 });
 async function startApp() {
-  await api("/api/login"); // verifica que la sesión siga activa
+  await verifyToken(false); // verifica que la llave siga activa
   M = await loadMenu();
   M.config = M.config || {}; M.cats = M.cats || [];
   $("#loginView").hidden = true; $("#appView").hidden = false;
@@ -776,6 +833,7 @@ let tt;
 function toast(msg, bad) { const t = $("#toast"); t.textContent = msg; t.classList.toggle("bad", !!bad); t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), bad ? 3800 : 2200); }
 
 /* ---------- inicio ---------- */
+$$("[data-repo]").forEach(e => e.textContent = REPO.name);
 (async () => {
   if (!token) return showLogin();
   try { await startApp(); } catch(e) { if (e.message !== "unauth") showLogin(e.message); }

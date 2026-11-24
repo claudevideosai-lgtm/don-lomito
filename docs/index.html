@@ -420,7 +420,7 @@
 <footer>
   <div class="wrap foot-in">
     <span>© <span id="year"></span> <span data-nombre></span> · Fotos ilustrativas</span>
-    <a href="/admin/">Acceso administrador</a>
+    <a href="admin/">Acceso administrador</a>
   </div>
 </footer>
 
@@ -531,12 +531,12 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* La carta se edita desde el panel /admin. Si el panel todavía no guardó nada, se usa menu-default.json. */
+/* La carta vive en menu.json y se edita desde el panel admin/ (que guarda los cambios en GitHub). */
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const fmt = n => "$" + Math.round(Number(n) || 0).toLocaleString("es-AR");
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-const SAFE_IMG = /^(fotos\/[\w.-]+|\/api\/foto\/[\w.-]+|https:\/\/[^\s"'<>]+)$/;
+const SAFE_IMG = /^(fotos\/(?:u\/)?[\w-]+\.(?:jpe?g|png|webp)|https:\/\/[^\s"'<>]+)$/;
 const img = src => SAFE_IMG.test(src || "") ? src : "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 const color = c => /^#[0-9a-fA-F]{3,8}$/.test(c || "") ? c : "#16a34a";
 const icon = (id, cls = "i") => `<svg class="${cls}"><use href="#${id}"/></svg>`;
@@ -546,12 +546,10 @@ let cart = {};
 const CART_KEY = "carta_cart_v3";
 
 async function loadMenu(){
-  try {
-    const r = await fetch("/api/menu", { cache:"no-store" });
-    if (r.ok) { const j = await r.json(); if (j && j.data && Array.isArray(j.data.cats)) return j.data; }
-  } catch(e) {}
-  const r2 = await fetch("menu-default.json", { cache:"no-store" });
-  return r2.json();
+  // ?v= evita que el navegador muestre una carta vieja guardada en caché
+  const r = await fetch("menu.json?v=" + Date.now(), { cache:"no-store" });
+  if (!r.ok) throw new Error("menu " + r.status);
+  return r.json();
 }
 
 /* ---------- carrito ---------- */
